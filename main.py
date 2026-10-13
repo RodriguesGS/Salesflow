@@ -1,6 +1,8 @@
 import logging
 
-from src.salesflow.extract import extract
+from salesflow.extract import extract
+from salesflow.transform import transform
+from salesflow.quality_check import check_empty
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,7 +21,9 @@ def main():
         raw = extract()
         logger.info("Extração concluída")
         
-        pass
+        check_empty(raw)
+        
+        processed = transform(raw)
     except Exception:
         logger.exception("Falha durante a execução do pipeline")
     
