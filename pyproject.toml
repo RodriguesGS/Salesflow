@@ -1,0 +1,18 @@
+[project]
+name = "salesflow"
+version = "0.1.0"
+description = "ETL pipeline with data quality validation"
+readme = "README.md"
+authors = [
+    { name = "Gabriel", email = "rodriguesgasoares@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "kagglehub>=1.0.2",
+    "pandas>=3.0.6",
+]
+
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
