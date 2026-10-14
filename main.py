@@ -1,8 +1,9 @@
 import logging
+import sys
 
+from salesflow.contract import DataQualityError, check_raw
 from salesflow.extract import extract
 from salesflow.transform import transform
-from salesflow.quality_check import check_empty
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,16 +18,26 @@ def main():
     
     logger.info("Iniciando Pipeline")
     
-    try:
-        raw = extract()
-        logger.info("Extração concluída")
-        
-        check_empty(raw)
-        
-        processed = transform(raw)
-    except Exception:
-        logger.exception("Falha durante a execução do pipeline")
+
+    raw = extract()
+    logger.info("Extração concluída: %s linhas, %s colunas", *raw.shape)
+    
+    check_raw(raw)
+    logger.info("Contrato de entrada OK")
+    
+    processed = transform(raw)
+
+    print(processed.dtypes)
+    print(processed.isna().sum())
     
     
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except DataQualityError:
+        logger.exception("Pipeline interrompida por violacao de contrato")
+        sys.exit(2)
+    except Exception:
+        logger.exception("Pipeline falhou por erro inesperado")
+        sys.exit(1)
+        
