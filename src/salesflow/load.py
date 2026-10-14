@@ -1,12 +1,15 @@
 import logging
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def load(clean, rejected):
+def load(clean: pd.DataFrame, rejected: pd.DataFrame) -> None:
     
-    clean.to_parquet("data/processed/cafe_sales.parquet", index=False)
+    logger.info("Starting data load")
     
-    rejected.to_csv("data/rejected/cafe_sales_rejected.csv", index=False)
-    
-    logger.info("Gravadas %s linhas limpas e %s rejeitadas", len(clean), len(rejected))
+    clean.to_parquet("data/processed/sales.parquet", index=False)
+    rejected.to_csv("data/rejected/sales_rejected.csv", index=False)
+
+    logger.info(f"data/processed/sales.parquet: {len(clean)} rows")
+    logger.info(f"data/processed/sales_rejected.csv: {len(rejected)} rows")

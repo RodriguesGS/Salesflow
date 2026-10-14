@@ -1,6 +1,8 @@
 import logging
 import sys
 
+from time import perf_counter
+
 from salesflow.contract import DataQualityError, check_raw
 from salesflow.extract import extract
 from salesflow.transform import transform
@@ -8,37 +10,39 @@ from salesflow.load import load
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
+    format="%(asctime)s | %(levelname)-8s | %(name)-20s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("salesflow")
 
 
-def main():
+def main() -> None:
     
-    logger.info("Iniciando Pipeline")
+    start_time = perf_counter()
     
+    logger.info("Salesflow pipeline started")
 
     raw = extract()
-    logger.info("Extração concluída: %s linhas, %s colunas", *raw.shape)
-    
     check_raw(raw)
-    logger.info("Contrato de entrada OK")
     
     df_clean, df_rejected = transform(raw)
-    
     load(df_clean, df_rejected)
     
-    logger.info("Pipeline finalizada com sucesso")
+    elapsed_time = perf_counter() - start_time
+    
+    logger.info(
+        "Salesflow pipeline completed successfully | Duration: %.2f seconds",
+        elapsed_time,
+    )
     
 if __name__ == "__main__":
     try:
         main()
     except DataQualityError:
-        logger.exception("Pipeline interrompida por violacao de contrato")
+        logger.exception("Pipeline stopped due to a data quality error")
         sys.exit(2)
     except Exception:
-        logger.exception("Pipeline falhou por erro inesperado")
+        logger.exception("Pipeline failed due to an unexpected error")
         sys.exit(1)
         
