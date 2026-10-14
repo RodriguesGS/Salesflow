@@ -25,10 +25,7 @@ def main():
     check_raw(raw)
     logger.info("Contrato de entrada OK")
     
-    processed = transform(raw)
-
-    print(processed.dtypes)
-    print(processed.isna().sum())
+    df_clean, df_rejected = transform(raw)
     
     
 if __name__ == "__main__":

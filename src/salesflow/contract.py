@@ -1,6 +1,3 @@
-
-
-
 EXPECTED_COLUMNS = {
     "Transaction ID",
     "Item",
