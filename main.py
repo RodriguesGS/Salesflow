@@ -4,6 +4,7 @@ import sys
 from salesflow.contract import DataQualityError, check_raw
 from salesflow.extract import extract
 from salesflow.transform import transform
+from salesflow.load import load
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,6 +28,9 @@ def main():
     
     df_clean, df_rejected = transform(raw)
     
+    load(df_clean, df_rejected)
+    
+    logger.info("Pipeline finalizada com sucesso")
     
 if __name__ == "__main__":
     try:
